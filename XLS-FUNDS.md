@@ -142,16 +142,16 @@ The `sfFundFees` object within the `FundCreate` transaction contains various fee
 
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
-| ManagementFee | Float | ✔️ | The percentage fee charged for the management of the fund. |
-| AdminFee | Float | ✔️ | The percentage fee charged for administrative expenses of the fund. |
-| FrontendFee | Float | ✔️ | The percentage fee charged upfront when an investment is made. |
-| BackendFee | Float | ✔️ | The percentage fee charged when profits are realized or upon withdrawal. |
-| 12B1Fee | Float | ✔️ | The percentage fee charged for marketing and distribution expenses. |
-| ExchangeFee | Float | ✔️ | The percentage fee charged for any exchange services provided by the fund. |
-| AccountFee | Integer | ✔️ | A fixed fee charged per account within the fund. |
-| AccountMin | Integer | ✔️ | The minimum account balance required to maintain an account in the fund. |
-| RedemptionFee | Float | ✔️ | The percentage fee charged when withdrawing funds before a specified period. |
-| RedemptionPeriod | Integer | ✔️ | The period (in days) during which the redemption fee applies. |
+| sfManagementFee | Float | ❌ | The percentage fee charged for the management of the fund. |
+| sfAdminFee | Float | ❌ | The percentage fee charged for administrative expenses of the fund. |
+| sfFrontendFee | Float | ❌ | The percentage fee charged upfront when an investment is made. |
+| sfBackendFee | Float | ❌ | The percentage fee charged when profits are realized or upon withdrawal. |
+| sf12B1Fee | Float | ❌ | The percentage fee charged for marketing and distribution expenses. |
+| sfExchangeFee | Float | ❌ | The percentage fee charged for any exchange services provided by the fund. |
+| sfAccountFee | Integer | ❌ | A fixed fee charged per account within the fund. |
+| sfAccountMin | Integer | ❌ | The minimum account balance required to maintain an account in the fund. |
+| sfRedemptionFee | Float | ❌ | The percentage fee charged when withdrawing funds before a specified period. |
+| sfRedemptionPeriod | Integer | ❌ | The period (in days) during which the redemption fee applies. |
 
 **Example of `sfFundFees` Object:**
 
@@ -232,7 +232,6 @@ The `FundWithdraw` transaction allows an account to withdraw funds from a fund b
 | sfTransactionType | String | ✔️ | The type of transaction, which is "FundWithdraw". |
 | sfFundID | UInt256 | ✔️ | The unique identifier of the fund from which the withdrawal is being made. |
 | sfAmount | Amount | ✔️ | The amount and currency being withdrawn from the fund. |
-| sfDestination | AccountID | ✔️ | The account ID where the withdrawn funds will be sent. |
 
 **Example `FundWithdraw` transaction:**
 
@@ -304,7 +303,7 @@ The `FundClose` transaction is used to close an existing fund on the XRPL. This 
 | sfAccount | AccountID | ✔️ | The account ID of the fund manager or authorized party initiating the fund closure. |
 | sfFundID | UInt256 | ✔️ | The unique identifier of the fund being closed. |
 | sfFlags | UInt32 | ✔️ | Flags to specify the type of closure (e.g., liquidation, merger). |
-| sfMergeTarget | UInt256 | Optional | The fund ID of another fund with which the closing fund may be merged (if applicable). |
+| sfMergeTarget | UInt256 | ❌ | The fund ID of another fund with which the closing fund may be merged (if applicable). |
 
 **Example `FundClose` transaction:**
 
