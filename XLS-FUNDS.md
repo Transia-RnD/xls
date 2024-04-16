@@ -1,4 +1,4 @@
-# XAS-3d Funds — Funds for XRPL Protocol Chains
+# XAS-??d Funds — Funds for XRPL Protocol Chains
 ```
 Title: Funds
 Type: Draft
