@@ -1,4 +1,4 @@
-# XAS-??d Funds — Funds for XRPL Protocol Chains
+# XAS-3d Funds — Funds for XRPL Protocol Chains
 ```
 Title: Funds
 Type: Draft
@@ -42,7 +42,7 @@ The `Fund` ledger object is a new on-ledger object that is created with the `Fun
 | sfAsset | Object | ✔️ | The underlying asset of the fund, including currency and issuer. |
 | sfFlags | UInt32 | ✔️ | Flags to set fund properties (e.g., open or closed). |
 | sfMinInvestors | UInt32 | ✔️ | Minimum number of investors required for the fund. |
-| sfMaxInvestment | Float | ✔️ | Maximum investment allowed per investor as a percentage of the fund. |
+| sfMaxInvestment | UInt16 | ✔️ | Maximum investment allowed per investor as a percentage of the fund. |
 | sfOfferingStart | UInt32 | ❌ | Ledger index when the offering starts. |
 | sfOfferingEnd | UInt32 | ❌ | Ledger index when the offering ends. |
 
@@ -55,16 +55,16 @@ The `Fund` ledger object is a new on-ledger object that is created with the `Fun
    "Owner": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
    "FundManager": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
    "FundFees": {
-      "ManagementFee": 0.025,
-      "AdminFee": 0.005,
-      "FrontendFee": 0.005,
-      "BackendFee": 0.005,
-      "12B1Fee": 0.075,
-      "ExchangeFee": 0.075,
-      "AccountFee": 1000,
-      "AccountMin": 10000,
-      "RedemptionFee": 0.05,
-      "RedemptionPeriod": 30
+      "ManagementFee": 250,       // 250 basis points (2.5%)
+      "AdminFee": 50,             // 50 basis points (0.5%)
+      "FrontendFee": 50,          // 50 basis points (0.5%)
+      "BackendFee": 50,           // 50 basis points (0.5%)
+      "12B1Fee": 750,             // 750 basis points (7.5%)
+      "ExchangeFee": 750,         // 750 basis points (7.5%)
+      "AccountFee": 1000,         // $1000 account fee (fixed amount, not in basis points)
+      "AccountMin": 10000,        // $10000 minimum account balance (fixed amount, not in basis points)
+      "RedemptionFee": 500,       // 500 basis points (5%)
+      "RedemptionPeriod": 30      // 30 days redemption period (duration, not in basis points)
    },
    "DID": "D79DE793C6934943D5389CB4E5392A05A8E00881202F05FE41ADC2AE83B24E91",
    "InitialPrice": "100",
@@ -97,7 +97,7 @@ The `FundCreate` transaction allows an account to establish a new fund on the XR
 | sfAsset | Object | ✔️ | The underlying asset of the fund, including currency and issuer. |
 | sfFlags | UInt32 | ✔️ | Flags to set fund properties (e.g., open or closed). |
 | sfMinInvestors | UInt32 | ✔️ | Minimum number of investors required for the fund. |
-| sfMaxInvestment | Float | ✔️ | Maximum investment allowed per investor as a percentage of the fund. |
+| sfMaxInvestment | UInt16 | ✔️ | Maximum investment allowed per investor as a percentage of the fund. |
 | sfOfferingStart | UInt32 | ❌ | Ledger index when the offering starts. |
 | sfOfferingEnd | UInt32 | ❌ | Ledger index when the offering ends. |
 
@@ -109,16 +109,16 @@ The `FundCreate` transaction allows an account to establish a new fund on the XR
    "TransactionType": "FundCreate",
    "FundManager": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
    "FundFees": {
-      "ManagementFee": 0.025,
-      "AdminFee": 0.005,
-      "FrontendFee": 0.005,
-      "BackendFee": 0.005,
-      "12B1Fee": 0.075,
-      "ExchangeFee": 0.075,
-      "AccountFee": 1000,
-      "AccountMin": 10000,
-      "RedemptionFee": 0.05,
-      "RedemptionPeriod": 30
+      "ManagementFee": 250,       // 250 basis points (2.5%)
+      "AdminFee": 50,             // 50 basis points (0.5%)
+      "FrontendFee": 50,          // 50 basis points (0.5%)
+      "BackendFee": 50,           // 50 basis points (0.5%)
+      "12B1Fee": 750,             // 750 basis points (7.5%)
+      "ExchangeFee": 750,         // 750 basis points (7.5%)
+      "AccountFee": 1000,         // $1000 account fee (fixed amount, not in basis points)
+      "AccountMin": 10000,        // $10000 minimum account balance (fixed amount, not in basis points)
+      "RedemptionFee": 500,       // 500 basis points (5%)
+      "RedemptionPeriod": 30      // 30 days redemption period (duration, not in basis points)
    },
    "DID": "D79DE793C6934943D5389CB4E5392A05A8E00881202F05FE41ADC2AE83B24E91",
    "InitialPrice": "100",
@@ -142,31 +142,33 @@ The `sfFundFees` object within the `FundCreate` transaction contains various fee
 
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
-| sfManagementFee | Float | ❌ | The percentage fee charged for the management of the fund. |
-| sfAdminFee | Float | ❌ | The percentage fee charged for administrative expenses of the fund. |
-| sfFrontendFee | Float | ❌ | The percentage fee charged upfront when an investment is made. |
-| sfBackendFee | Float | ❌ | The percentage fee charged when profits are realized or upon withdrawal. |
-| sf12B1Fee | Float | ❌ | The percentage fee charged for marketing and distribution expenses. |
-| sfExchangeFee | Float | ❌ | The percentage fee charged for any exchange services provided by the fund. |
-| sfAccountFee | Integer | ❌ | A fixed fee charged per account within the fund. |
-| sfAccountMin | Integer | ❌ | The minimum account balance required to maintain an account in the fund. |
-| sfRedemptionFee | Float | ❌ | The percentage fee charged when withdrawing funds before a specified period. |
-| sfRedemptionPeriod | Integer | ❌ | The period (in days) during which the redemption fee applies. |
+| sfManagementFee | UInt16 | ❌ | The percentage fee charged for the management of the fund. |
+| sfAdminFee | UInt16 | ❌ | The percentage fee charged for administrative expenses of the fund. |
+| sfFrontendFee | UInt16 | ❌ | The percentage fee charged upfront when an investment is made. |
+| sfBackendFee | UInt16 | ❌ | The percentage fee charged when profits are realized or upon withdrawal. |
+| sf12B1Fee | UInt16 | ❌ | The percentage fee charged for marketing and distribution expenses. |
+| sfExchangeFee | UInt16 | ❌ | The percentage fee charged for any exchange services provided by the fund. |
+| sfAccountFee | UInt64 | ❌ | A fixed fee charged per account within the fund. |
+| sfAccountMin | UInt64 | ❌ | The minimum account balance required to maintain an account in the fund. |
+| sfRedemptionFee | UInt16 | ❌ | The percentage fee charged when withdrawing funds before a specified period. |
+| sfRedemptionPeriod | UInt32 | ❌ | The period (in days) during which the redemption fee applies. |
 
 **Example of `sfFundFees` Object:**
 
 ```json
-"FundFees": {
-   "ManagementFee": 0.025,       // 2.5% management fee
-   "AdminFee": 0.005,   // 0.5% administrative fee
-   "FrontendFee": 0.005,         // 0.5% frontend fee
-   "BackendFee": 0.005,          // 0.5% backend fee
-   "12B1Fee": 0.075,             // 7.5% 12B1 fee
-   "ExchangeFee": 0.075,         // 7.5% exchange fee
-   "AccountFee": 1000,        // $1000 account fee
-   "AccountMin": 10000,       // $10000 minimum account balance
-   "RedemptionFee": 0.05,     // 5% redemption fee
-   "RedemptionPeriod": 30     // 30 days redemption period
+{
+   "FundFees": {
+      "ManagementFee": 250,       // 250 basis points (2.5%)
+      "AdminFee": 50,             // 50 basis points (0.5%)
+      "FrontendFee": 50,          // 50 basis points (0.5%)
+      "BackendFee": 50,           // 50 basis points (0.5%)
+      "12B1Fee": 750,             // 750 basis points (7.5%)
+      "ExchangeFee": 750,         // 750 basis points (7.5%)
+      "AccountFee": 1000,         // $1000 account fee (fixed amount, not in basis points)
+      "AccountMin": 10000,        // $10000 minimum account balance (fixed amount, not in basis points)
+      "RedemptionFee": 500,       // 500 basis points (5%)
+      "RedemptionPeriod": 30      // 30 days redemption period (duration, not in basis points)
+   }
 }
 ```
 
