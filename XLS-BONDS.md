@@ -17,23 +17,23 @@ The proposed amendment introduces a new framework for bond issuance and manageme
 
 The amendment adds:
 
-* A new type of ledger object: `ltBond`
+* A new type of ledger object: `ltBondOffering`
 
 Three new transaction types:
 * `BondOffer`
 * `BondMint`
 * `BondAction`
 
-## New Ledger Object Type: `Bond`
+## New Ledger Object Type: `BondOffering`
 
-The `Bond` ledger object is a new on-ledger object that represents a bond on the XRPL. This object is used to store the details of a bond, including the issuer, the underlying asset, the term, the coupon rate, the balloon rate, the coupon delay, the maturity date, the principle, the dated date, the DID, the coupon frequency, the bond ID, and the offering ID.
+The `BondOffering` ledger object is a new on-ledger object that represents a bond on the XRPL. This object is used to store the details of a bond, including the issuer, the underlying asset, the term, the coupon rate, the balloon rate, the coupon delay, the maturity date, the principle, the dated date, the DID, the coupon frequency, the bond ID, and the offering ID.
 
 The object has the following fields:
 
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
 | sfOwner | AccountID | ✔️ | The account that created the bond. |
-| sfOwnerNode | UInt64 | ✔️ | Reference to the owner directory node that the `Bond` object is part of. |
+| sfOwnerNode | UInt64 | ✔️ | Reference to the owner directory node that the `BondOffering` object is part of. |
 | sfIssuer | AccountID | ✔️ | The account that issued the bond. |
 | sfFlags | UInt32 | ✔️ | The flags of the bond offering. |
 | sfOfferingStart | UInt32 | ✔️ | The start time of the offering, specified as a UNIX timestamp. |
@@ -48,14 +48,13 @@ The object has the following fields:
 | sfDatedDate | UInt32 | ✔️ | The dated date of the bond. |
 | sfDID | String | ✔️ | The DID of the bond. |
 | sfCouponFrequency | UInt32 | ✔️ | The coupon frequency of the bond as weeks. |
-| sfBondID | Hash256 | ✔️ | The ID of the bond. |
 | sfOfferingID | Hash256 | ✔️ | The ID of the bond offering. |
 
-Example `Bond` object:
+Example `BondOffering` object:
 
 ```json
 {
-   "LedgerEntryType": "Bond",
+   "LedgerEntryType": "BondOffering",
    "Owner": "rU9XRmcZiJXp5J1LDJq8iZFujU6Wwn9cV9",
    "OwnerNode": "0000000000000000",
    "Issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
@@ -105,7 +104,6 @@ The `BondOffer` transaction is used to create a new bond offering on the XRPL. T
 | sfDatedDate | UInt32 | ✔️ | The dated date of the bond, specified as a UNIX timestamp. |
 | sfDID | UInt32 | ✔️ | The DID of the bond. |
 | sfCouponFrequency | UInt32 | ✔️ | The frequency of coupon payments, in weeks. |
-| sfBondID | Hash256 | ❌ | The ID of the bond, if refunding. |
 | sfOfferingID | Hash256 | ❌ | The ID of the offering, if refunding. |
 
 Example `BondOffer` transaction:
@@ -134,7 +132,6 @@ Example `BondOffer` transaction:
    "DatedDate": 743171568,
    "DID": "C24DAF43927556F379F7B8616176E57ACEFF1B5D016DC896222603A6DD11CE05",
    "CouponFrequency": 52, // As weeks (once per year)
-   "BondID": "C24DAF43927556F379F7B8616176E57ACEFF1B5D016DC896222603A6DD11CE05", // If Refunding
    "OfferingID": "C24DAF43927556F379F7B8616176E57ACEFF1B5D016DC896222603A6DD11CE05", // If Refunding
 }
 ```
@@ -160,7 +157,6 @@ The `BondMint` transaction is used to mint a new bond contract from an existing 
 | --- | --- | --- | --- |
 | sfTransactionType | String | ✔️ | The type of transaction, which is "BondMint" for minting a new bond. |
 | sfAccount | AccountID | ✔️ | The account minting the bond contract. |
-| sfBondID | Hash256 | ✔️ | The ID of the bond ledger entry object. |
 | sfOfferingID | Hash256 | ✔️ | The ID of the offering ledger entry object. |
 | sfAmount | Amount | ✔️ | The principle of the bond contract. This is the initial investment paid by the buyer. |
 
@@ -170,7 +166,6 @@ Example `BondMint` transaction:
 {
    "Account": "raKG2uCwu71ohFGo1BJr7xqeGfWfYWZeh3",
    "TransactionType": "BondMint",
-   "BondID": "C24DAF43927556F379F7B8616176E57ACEFF1B5D016DC896222603A6DD11CE05",
    "OfferingID": "C24DAF43927556F379F7B8616176E57ACEFF1B5D016DC896222603A6DD11CE05",
    "Amount": {
       "currency" : "USD",
