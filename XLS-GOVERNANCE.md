@@ -1,8 +1,11 @@
-Title: Decentralized Governance
+# XLS-??d Governance — Decentralized Governance
+```
+Title: Governance
 Type: Draft
 Author:
 	Denis Angell, XRPL-Labs <a href="https://github.com/dangell7/">(dangell7)</a>
 Affiliation: XRPL-Labs
+```
 
 # Problem Statement
 
