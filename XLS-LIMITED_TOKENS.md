@@ -3,7 +3,7 @@
 Title: Limited Token Issuance
 Type: Draft
 Author:
-    Denis Angell, XRPL-Labs <a href="https://github.com/dangell7/">(dangell7)</a>
+    Denis Angell, @dangell7
 ```
 
 ## Introduction
