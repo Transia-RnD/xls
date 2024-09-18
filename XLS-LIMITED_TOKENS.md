@@ -24,7 +24,7 @@ The amendment adds the following:
 
 ## New Ledger Entry: `FToken`
 
-The `FToken` ledger entry is a new on-ledger object that represents the token issuance limits and related settings for an asset on the XRPL. This object is used to store the details of the token trust, including the maximum token limit and the current token count.
+The `FToken` ledger entry is a new on-ledger object that represents the token issuance limits and related settings for an asset on the XRPL.
 
 The object has the following fields:
 
@@ -51,7 +51,7 @@ Example `FToken` object:
 
 ## New Transaction Type: `CreateFToken`
 
-The `CreateFToken` transaction is used to create a ledger object that defines the maximum number of tokens that can be issued for a specific asset. This transaction allows users to set the maximum token limit and initialize the token count.
+The `CreateFToken` transaction is used to create the `FToken` ledger object.
 
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -80,7 +80,7 @@ In addition to the `CreateFToken` transaction, we propose a new transaction type
 #### Conditions for Deleting an `FToken`
 
 - The `OutstandingAmount` must be 0 for the specific `FToken` they wish to delete. This requirement ensures that there are no outstanding obligations or dependencies on the token, thereby preventing potential disruptions in the market.
-- If the issuer attempts to delete the `FToken` while there are active trustlines, the transaction will be rejected.
+- If the issuer attempts to delete the `FToken` while there are active trustlines, the transaction will also be rejected.
 
 #### Example `DeleteFToken` Transaction
 
@@ -106,13 +106,13 @@ Example `DeleteFToken` transaction:
 
 When a payment transaction is submitted, the following rules apply:
 
-1. **Outstanding Amount Update**: The `OutstandingAmount` in the `FToken` object will be updated based on the amount specified in any transaction that includes a `STAmount` field from the issuer for the specific currency. The `OutstandingAmount` can also be reduced when the issuer is the destination of a transaction or an offer is cancelled.
-2. **Maximum Token Limit Check**: If the updated `OutstandingAmount` exceeds the `MaximumAmount` limit, the transaction will be rejected with a new Transaction Error Code (`tecTOKEN_LIMIT_EXCEEDED`).
-3. **Successful Transaction**: If the updated `OutstandingAmount` is within the limit, the transaction will be successful (`tesSUCCESS`).
+1. **Outstanding Amount Update**: The `OutstandingAmount` in the `FToken` object will be updated based on the amount specified in any transaction that includes a `STAmount` field from the issuer for the specific currency. The `OutstandingAmount` can also be reduced when the issuer is the destination of a transaction or an offer is cancelled for example.
+2. **Maximum Token Limit Check**: If the updated `OutstandingAmount` exceeds the `MaximumAmount` limit, the transaction will be rejected.
+3. **Successful Transaction**: If the updated `OutstandingAmount` is within the limit, the transaction will be successful.
 
 ### Implementation Details
 
-The counting logic for the token issuance will be implemented in the `Transactor.cpp` file. This will ensure that all transactions containing an `STAmount` from the issuer are accurately counted towards the `OutstandingAmount` in the `FToken` ledger entry.
+The counting logic for the token issuance will be implemented in the `Transactor.cpp` file. This will ensure that all transactions containing an `STAmount` from the issuer or to the issuer accurately update the `OutstandingAmount` in the `FToken` ledger entry.
 
 ### Example Payment Transaction
 
@@ -144,7 +144,7 @@ The counting logic for the token issuance will be implemented in the `Transactor
 ## Frequently Asked Questions (FAQ)
 
 ### Q1: What happens if a transaction exceeds the maximum token limit?
-**A1:** If a transaction attempts to exceed the maximum token limit set in the `FToken` object, the transaction will be rejected with a new Transaction Error Code (`tecTOKEN_LIMIT_EXCEEDED`).
+**A1:** If a transaction attempts to exceed the maximum token limit set in the `FToken` object, the transaction will be rejected.
 
 ### Q2: Which transactions will affect the `OutstandingAmount` in the `FToken` object?
 **A2:** The following transactions will be monitored for their `Amount` or `STAmount` fields, and will affect the `OutstandingAmount`:
