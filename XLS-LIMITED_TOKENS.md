@@ -8,13 +8,9 @@ Author:
 
 ## Introduction
 
-The ability to issue tokens on the XRPL provides users with a powerful tool for creating and managing digital assets. However, without proper controls in place, token issuance can lead to excessive supply, which may dilute the value of existing tokens and create instability in the market. To address these concerns, we propose a new amendment that introduces a mechanism for limiting token issuance on the XRPL.
+The ability to issue tokens on the XRPL provides users with a powerful tool for creating and managing digital assets. However, without proper controls in place, token issuance can lead to excessive supply, which may dilute the value of existing tokens and create instability in the market. Currently, one method to limit token issuance involves "blackholing" the issuer account, which effectively disables the account by removing its master key. While this approach can prevent further token issuance, it has significant drawbacks, including ledger bloat, as the account cannot be deleted once the master key is disabled. This results in an accumulation of unused accounts in the ledger, leading to inefficiencies and increased storage requirements.
 
-The objective of the Limited Token Issuance amendment is to provide users with the ability to set a maximum limit on the number of tokens that can be issued for a specific asset. This will help maintain the integrity and value of tokens while allowing for controlled growth in the token ecosystem.
-
-## Problem Statement
-
-Currently, the XRPL does not have a native mechanism to limit the issuance of tokens. This lack of control can lead to situations where token creators issue an excessive number of tokens, potentially harming the value of the asset and the interests of token holders. To provide users with more control over token issuance and to promote responsible asset management, we propose the introduction of a new transactor and ledger object that will facilitate limited token issuance.
+To address these concerns, we propose a new amendment that introduces a mechanism for limiting token issuance on the XRPL without resorting to blackholing the issuer account. This will help maintain the integrity and value of tokens while allowing for controlled growth in the token ecosystem.
 
 ## Amendment
 
@@ -147,3 +143,7 @@ The counting logic for the token issuance will be implemented in the `Transactor
 
 ### Q5: How will the implementation of this amendment affect existing tokens?
 **A5:** The implementation of this amendment will not retroactively affect existing tokens. It will apply to new token issuances going forward, allowing users to set limits on tokens created after the amendment is enacted. Existing tokens will continue to operate under the rules that were in place at the time of their issuance.
+
+### Q6: How does the `OutstandingAmount` get reduced?
+**A6:** When funds are sent back to the issuer, the `OutstandingAmount` in the `FToken` object will be reduced accordingly. This occurs during payment transactions where the issuer receives tokens back. There are also other transactions that can reduce the `OutstandingAmount`.
+
