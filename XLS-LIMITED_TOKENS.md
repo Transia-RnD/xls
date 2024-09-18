@@ -183,3 +183,5 @@ Once an account creates an `FToken`, it will only be allowed to perform specific
 
 - **Payment**: Allows the issuer to send tokens to other accounts.
 - **Clawback**: Enables the issuer to reclaim tokens from other accounts, providing a mechanism for managing token supply and addressing potential misuse.
+
+> Credit: @Vet_X0 for posting the idea publicly so that we can have a discussion.
