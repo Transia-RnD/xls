@@ -19,31 +19,8 @@ The proposed amendment introduces a new feature that allows users to set limits 
 The amendment adds the following:
 
 - A new transaction type: `CreateFToken`
+- A new transaction type: `DeleteFToken`
 - A new ledger entry: `FToken`
-
-## New Transaction Type: `CreateFToken`
-
-The `CreateFToken` transaction is used to create a ledger object that defines the maximum number of tokens that can be issued for a specific asset. This transaction allows users to set the maximum token limit and initialize the token count.
-
-| Field | Type | Required | Description |
-| --- | --- | --- | --- |
-| sfTransactionType | String | ✔️ | The type of transaction, which is "CreateFToken" for setting the maximum token limit. |
-| sfAccount | AccountID | ✔️ | The account for which the token issuance limit is being set. The issuer. |
-| sfCurrency     | STCurrency    | ✔️  | The currency of the token.        |
-| sfMaximumAmount | UInt64 | ✔️ | The maximum number of tokens that can be issued for the asset. |
-| sfURI     | Blob    |   | An optional URI that can hold additional data for the token        |
-
-Example `CreateFToken` transaction:
-
-```json
-{
-   "TransactionType": "CreateFToken",
-   "Account": "rU9XRmcZiJXp5J1LDJq8iZFujU6Wwn9cV9",
-   "Currency": "XYZ",
-   "MaximumAmount": "1000000",
-   "URI": "https://example.com"
-}
-```
 
 ## New Ledger Entry: `FToken`
 
@@ -72,11 +49,64 @@ Example `FToken` object:
 }
 ```
 
+## New Transaction Type: `CreateFToken`
+
+The `CreateFToken` transaction is used to create a ledger object that defines the maximum number of tokens that can be issued for a specific asset. This transaction allows users to set the maximum token limit and initialize the token count.
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| sfTransactionType | String | ✔️ | The type of transaction, which is "CreateFToken" for setting the maximum token limit. |
+| sfAccount | AccountID | ✔️ | The account for which the token issuance limit is being set. The issuer. |
+| sfCurrency     | STCurrency    | ✔️  | The currency of the token.        |
+| sfMaximumAmount | UInt64 | ✔️ | The maximum number of tokens that can be issued for the asset. |
+| sfURI     | Blob    |   | An optional URI that can hold additional data for the token        |
+
+Example `CreateFToken` transaction:
+
+```json
+{
+   "TransactionType": "CreateFToken",
+   "Account": "rU9XRmcZiJXp5J1LDJq8iZFujU6Wwn9cV9",
+   "Currency": "XYZ",
+   "MaximumAmount": "1000000",
+   "URI": "https://example.com"
+}
+```
+
+### New Transaction Type: `DeleteFToken`
+
+In addition to the `CreateFToken` transaction, we propose a new transaction type called `DeleteFToken`. This transaction allows the issuer to remove the `FToken` object from the ledger, but only under specific conditions to ensure the integrity of the token ecosystem.
+
+#### Conditions for Deleting an `FToken`
+
+- The `OutstandingAmount` must be 0 for the specific `FToken` they wish to delete. This requirement ensures that there are no outstanding obligations or dependencies on the token, thereby preventing potential disruptions in the market.
+- If the issuer attempts to delete the `FToken` while there are active trustlines, the transaction will be rejected.
+
+#### Example `DeleteFToken` Transaction
+
+The `DeleteFToken` transaction will have the following structure:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| sfTransactionType | String | ✔️ | The type of transaction, which is "DeleteFToken" for removing the token limit. |
+| sfAccount | AccountID | ✔️ | The account that issued the token and is attempting to delete the `FToken`. |
+| sfCurrency | STCurrency | ✔️ | The currency of the token to be deleted. |
+
+Example `DeleteFToken` transaction:
+
+```json
+{
+   "TransactionType": "DeleteFToken",
+   "Account": "rU9XRmcZiJXp5J1LDJq8iZFujU6Wwn9cV9",
+   "Currency": "XYZ"
+}
+```
+
 ## Handling Payment Transactions
 
 When a payment transaction is submitted, the following rules apply:
 
-1. **Token Count Update**: The `OutstandingAmount` in the `FToken` object will be updated based on the amount specified in any transaction that includes a `STAmount` field from the issuer for the specific currency.
+1. **Outstanding Amount Update**: The `OutstandingAmount` in the `FToken` object will be updated based on the amount specified in any transaction that includes a `STAmount` field from the issuer for the specific currency. The `OutstandingAmount` can also be reduced when the issuer is the destination of a transaction or an offer is cancelled.
 2. **Maximum Token Limit Check**: If the updated `OutstandingAmount` exceeds the `MaximumAmount` limit, the transaction will be rejected with a new Transaction Error Code (`tecTOKEN_LIMIT_EXCEEDED`).
 3. **Successful Transaction**: If the updated `OutstandingAmount` is within the limit, the transaction will be successful (`tesSUCCESS`).
 
@@ -147,3 +177,13 @@ The counting logic for the token issuance will be implemented in the `Transactor
 ### Q6: How does the `OutstandingAmount` get reduced?
 **A6:** When funds are sent back to the issuer, the `OutstandingAmount` in the `FToken` object will be reduced accordingly. This occurs during payment transactions where the issuer receives tokens back. There are also other transactions that can reduce the `OutstandingAmount`.
 
+## Another Implementation
+
+In addition to the proposed amendment for limiting token issuance through the `CreateFToken` transaction, we could do an alternative implementation that enhances security and control for token issuers. This implementation restricts the types of transactions that can be executed by an account that has created an `FToken`. 
+
+### Overview
+
+Once an account creates an `FToken`, it will only be allowed to perform specific transaction types. This restriction ensures that the issuer maintains control over the flow of tokens and minimizes the risk of unintended consequences from other transaction types. The only permitted transactions for the issuer account will be:
+
+- **Payment**: Allows the issuer to send tokens to other accounts.
+- **Clawback**: Enables the issuer to reclaim tokens from other accounts, providing a mechanism for managing token supply and addressing potential misuse.
