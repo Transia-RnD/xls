@@ -34,7 +34,7 @@ The `CreateFToken` transaction is used to create a ledger object that defines th
 | sfTransactionType | String | ✔️ | The type of transaction, which is "CreateFToken" for setting the maximum token limit. |
 | sfAccount | AccountID | ✔️ | The account for which the token issuance limit is being set. The issuer. |
 | sfCurrency     | STCurrency    | ✔️  | The currency of the token.        |
-| sfMaximumAmount | Amount | ✔️ | The maximum number of tokens that can be issued for the asset. |
+| sfMaximumAmount | UInt64 | ✔️ | The maximum number of tokens that can be issued for the asset. |
 | sfURI     | Blob    |   | An optional URI that can hold additional data for the token        |
 
 Example `CreateFToken` transaction:
@@ -59,8 +59,8 @@ The object has the following fields:
 | --- | --- | --- | --- |
 | sfAccount | AccountID | ✔️ | The account for which the token trust is set. The issuer. |
 | sfCurrency     | STCurrency    | ✔️  | The asset currency of the token.        |
-| sfMaximumAmount | Amount | ✔️ | The maximum number of tokens that can be issued for the asset. |
-| sfOutstandingAmount | Amount | ✔️ | The current count of tokens that have been issued. |
+| sfMaximumAmount | UInt64 | ✔️ | The maximum number of tokens that can be issued for the asset. |
+| sfOutstandingAmount | UInt64 | ✔️ | The current count of tokens that have been issued. |
 | sfURI     | Blob    |   | An optional URI that can hold additional data for the token        |
 
 Example `FToken` object:
