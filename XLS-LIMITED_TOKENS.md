@@ -80,13 +80,13 @@ Example `FToken` object:
 
 When a payment transaction is submitted, the following rules apply:
 
-1. **Token Count Update**: The `TokenCount` in the `FToken` object will be updated based on the amount specified in any transaction that includes a `STAmount` field from the issuer for the specific currency.
-2. **Maximum Token Limit Check**: If the updated `TokenCount` exceeds the `MaxTokens` limit, the transaction will be rejected with a new Transaction Error Code (`tecTOKEN_LIMIT_EXCEEDED`).
-3. **Successful Transaction**: If the updated `TokenCount` is within the limit, the transaction will be successful (`tesSUCCESS`).
+1. **Token Count Update**: The `OutstandingAmount` in the `FToken` object will be updated based on the amount specified in any transaction that includes a `STAmount` field from the issuer for the specific currency.
+2. **Maximum Token Limit Check**: If the updated `OutstandingAmount` exceeds the `MaximumAmount` limit, the transaction will be rejected with a new Transaction Error Code (`tecTOKEN_LIMIT_EXCEEDED`).
+3. **Successful Transaction**: If the updated `OutstandingAmount` is within the limit, the transaction will be successful (`tesSUCCESS`).
 
 ### Implementation Details
 
-The counting logic for the token issuance will be implemented in the `Transactor.cpp` file. This will ensure that all transactions containing an `STAmount` from the issuer are accurately counted towards the `TokenCount` in the `FToken` ledger entry.
+The counting logic for the token issuance will be implemented in the `Transactor.cpp` file. This will ensure that all transactions containing an `STAmount` from the issuer are accurately counted towards the `OutstandingAmount` in the `FToken` ledger entry.
 
 ### Example Payment Transaction
 
@@ -120,8 +120,8 @@ The counting logic for the token issuance will be implemented in the `Transactor
 ### Q1: What happens if a transaction exceeds the maximum token limit?
 **A1:** If a transaction attempts to exceed the maximum token limit set in the `FToken` object, the transaction will be rejected with a new Transaction Error Code (`tecTOKEN_LIMIT_EXCEEDED`).
 
-### Q2: Which transactions will affect the `TokenCount` in the `FToken` object?
-**A2:** The following transactions will be monitored for their `Amount` or `STAmount` fields, and will affect the `TokenCount`:
+### Q2: Which transactions will affect the `OutstandingAmount` in the `FToken` object?
+**A2:** The following transactions will be monitored for their `Amount` or `STAmount` fields, and will affect the `OutstandingAmount`:
 - Payment
 - EscrowCreate
 - EscrowCancel
