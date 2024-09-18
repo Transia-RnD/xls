@@ -177,11 +177,7 @@ The counting logic for the token issuance will be implemented in the `Transactor
 ### Q6: How does the `OutstandingAmount` get reduced?
 **A6:** When funds are sent back to the issuer, the `OutstandingAmount` in the `FToken` object will be reduced accordingly. This occurs during payment transactions where the issuer receives tokens back. There are also other transactions that can reduce the `OutstandingAmount`.
 
-## Another Implementation
-
-In addition to the proposed amendment for limiting token issuance through the `CreateFToken` transaction, we could do an alternative implementation that enhances security and control for token issuers. This implementation restricts the types of transactions that can be executed by an account that has created an `FToken`. 
-
-### Overview
+## Another Implementation: Restricted Transaction Types for FToken Issuers
 
 Once an account creates an `FToken`, it will only be allowed to perform specific transaction types. This restriction ensures that the issuer maintains control over the flow of tokens and minimizes the risk of unintended consequences from other transaction types. The only permitted transactions for the issuer account will be:
 
